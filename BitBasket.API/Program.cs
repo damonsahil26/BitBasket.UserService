@@ -16,9 +16,22 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>  
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder => builder
+    .WithOrigins("http://localhost:4132")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    );
+});
+
 builder.Services.AddAutoMapper(typeof(ApplicationUserMappingProfile).Assembly);
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -31,5 +44,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSwagger();
+
+app.UseSwaggerUI();
+
+app.UseCors();
 
 app.Run();
